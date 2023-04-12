@@ -13,7 +13,7 @@ import dataset
 import sampling
 import exec
 # import plots
-import main
+from main import Main
 
 def test_main():
     dataset = "movie lens"
