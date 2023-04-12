@@ -14,11 +14,11 @@ import sampling
 import exec
 import plots
 
-class Main():
-    def __init__(self):
+class Main( dataset ):
+    def __init__(self, dataset):
         
         # Select the dataset you want to try
-        self.dataset = "Amazon"         #"movie lens"/"Amazon"
+        self.dataset = dataset         #"movie lens"/"Amazon"
         self.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
         # > Variables ------------------------------------------------
