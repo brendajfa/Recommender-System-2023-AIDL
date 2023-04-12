@@ -105,12 +105,12 @@ dependencies:
   # - openjpeg=2.5.0=h7d73246_1
   # - openssl=3.0.7=h166bdaf_0
   # - pillow=9.2.0=py38h9eb91d8_3
-  # - pip=22.3.1=pyhd8ed1ab_0
+  - pip=22.3.1=pyhd8ed1ab_0
   # - pthread-stubs=0.4=h36c2ea0_1001
   # - pycparser=2.21=pyhd8ed1ab_0
   # - pyopenssl=22.1.0=pyhd8ed1ab_0
   # - pysocks=1.7.1=pyha2e5f31_6
-  - python=3.8
+  - python=3.8.13=ha86cf86_0_cpython
   # - python_abi=3.8=2_cp38
   # - pytorch=1.13.0=py3.8_cuda11.6_cudnn8.3.2_0
   # - pytorch-cuda=11.6=h867d48c_0
