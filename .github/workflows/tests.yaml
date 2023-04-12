@@ -27,7 +27,7 @@ jobs:
           cache-downloads: true
           
       - run: |
-          micromamba activate course
+          micromamba activate aidl
           pip install -U pytest
           pytest Implementation/
         #env:
