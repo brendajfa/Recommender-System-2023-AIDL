@@ -14,8 +14,8 @@ import sampling
 import exec
 import plots
 
-class Main( dataset ):
-    def __init__(self, dataset):
+class Main():
+    def __init__(self, dataset="movie lens"):
         
         # Select the dataset you want to try
         self.dataset = dataset         #"movie lens"/"Amazon"
