@@ -156,4 +156,4 @@ dependencies:
     - # importlib-metadata==4.11.3
     - # entrypoints==0.4
     
-#prefix: /home/darek/mambaforge/envs/course
+prefix: /home/runner/micromamba-root/envs/course
