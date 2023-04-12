@@ -90,7 +90,7 @@ class Main():
     #     # < Dataset --------------------------------------------------
     #     self.log.save_data_configuration("-"*20+f"\nDataset: {self.dataset}")
 
-    # def start(self):
+    def start(self):
 
     #     if self.test_mode:
     #         print(self.device)
@@ -99,10 +99,11 @@ class Main():
     #     tb_fm, tb_rnd, tb_pop, tb_ncf = self.log.def_log()
         
     #     # > Dataset ---------------------------------------------------------------------------------
-    #     if self.test_mode:
-    #         NrRows = 5000
-    #     else:
-    #         NrRows = None
+        if self.test_mode:
+            NrRows = 5000
+            print(NrRows)
+        else:
+            NrRows = None
 
     #     # Message for tuning mode 
     #     if self.tuning_mode:
