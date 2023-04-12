@@ -29,6 +29,7 @@ jobs:
       - run: |
           micromamba activate aidl
           pip install -U pytest
-          pytest Implementation/
+          cd Implementation
+          pytest 
         #env:
         #  WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
