@@ -16,10 +16,10 @@ import exec
 import plots
 
 class Main():
-    def __init__(self):
+    def __init__(self, dataset="movie lens"):
         
         # Select the dataset you want to try
-        self.dataset = "Amazon"         #"movie lens"/"Amazon"
+        self.dataset = dataset         #"movie lens"/"Amazon"
         self.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
         # > Variables ------------------------------------------------
