@@ -4,7 +4,8 @@ import torch
 from torch.utils.data import DataLoader
 import numpy as np
 import logs
-import dataset
+from dataset_csv import DataSet
+import dataset_csv
 import pointdata
 import model_fm
 import model_random
@@ -62,7 +63,8 @@ class Main():
         self.log = logs.Logs(exec_path=self.exec_path, ml=False)
         self.spl = sampling.Sample()
         self.exec = exec.Execution()
-        self.ds = dataset.DataSet()
+        self.ds = DataSet()
+        self.ds = dataset_csv.DataSet()
         # < Classes --------------------------------------------------
         
         # > Dataset --------------------------------------------------
