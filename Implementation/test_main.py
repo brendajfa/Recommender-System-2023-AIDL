@@ -12,12 +12,10 @@ import dataset
 # import model_nfc
 import sampling
 import exec
-import packaging.version
 # import plots
-
 import main
 
 def test_main():
     dataset = "movie lens"
     main = Main(dataset)
-    main.start()
+
