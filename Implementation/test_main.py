@@ -39,94 +39,94 @@ class Main():
             "lr_ncf":1e-4               # {1e-4, 1e-3}      original: 1e-4
         }
 
-        self.ini_time  = datetime.now()
-        self.exec_path = os.getcwd()
-        self.strategy  = self.tuning_params["leave_one_out"]
+    #     self.ini_time  = datetime.now()
+    #     self.exec_path = os.getcwd()
+    #     self.strategy  = self.tuning_params["leave_one_out"]
 
-        self.hparams = {
-            'batch_size':64,
-            'num_epochs': 12,
-            'hidden_size':self.tuning_params["hidden_size"], 
-            'learning_rate':self.tuning_params["lr"],
-            'hidden_size_ncf':self.tuning_params["hidden_size_ncf"], 
-            'learning_rate_ncf':self.tuning_params["lr_ncf"]
-        }
+    #     self.hparams = {
+    #         'batch_size':64,
+    #         'num_epochs': 12,
+    #         'hidden_size':self.tuning_params["hidden_size"], 
+    #         'learning_rate':self.tuning_params["lr"],
+    #         'hidden_size_ncf':self.tuning_params["hidden_size_ncf"], 
+    #         'learning_rate_ncf':self.tuning_params["lr_ncf"]
+    #     }
 
-        # Seed for Random Reproducibility
-        self.seed=0
-        self.random = exec.Execution.seed_everything(self.seed)
+    #     # Seed for Random Reproducibility
+    #     self.seed=0
+    #     self.random = exec.Execution.seed_everything(self.seed)
 
-        self.pop_reco = []
-        # < Variables ------------------------------------------------
+    #     self.pop_reco = []
+    #     # < Variables ------------------------------------------------
 
-        # > Classes --------------------------------------------------
-        self.log = logs.Logs(exec_path=self.exec_path, ml=False)
-        self.spl = sampling.Sample()
-        self.exec = exec.Execution()
-        self.ds = dataset.DataSet()
-        # < Classes --------------------------------------------------
+    #     # > Classes --------------------------------------------------
+    #     self.log = logs.Logs(exec_path=self.exec_path, ml=False)
+    #     self.spl = sampling.Sample()
+    #     self.exec = exec.Execution()
+    #     self.ds = dataset.DataSet()
+    #     # < Classes --------------------------------------------------
         
-        # > Dataset --------------------------------------------------
-        self.min_reviews, self.min_usuarios = [8,8] if self.tuning_mode else [6,6]
+    #     # > Dataset --------------------------------------------------
+    #     self.min_reviews, self.min_usuarios = [8,8] if self.tuning_mode else [6,6]
         
-        # Dataset columns depending on chosen data
-        if self.dataset == "movie lens":
+    #     # Dataset columns depending on chosen data
+    #     if self.dataset == "movie lens":
 
-            self.col_names =   {"col_id_reviewer": "user",
-                                "col_id_product": "item",
-                                "col_rating": "rating",
-                                "col_timestamp": "timestamp"}
+    #         self.col_names =   {"col_id_reviewer": "user",
+    #                             "col_id_product": "item",
+    #                             "col_rating": "rating",
+    #                             "col_timestamp": "timestamp"}
             
-        else:
+    #     else:
 
-            self.col_names =   {"col_id_reviewer": "reviewerID",
-                                "col_id_product": "asin",
-                                "col_rating": "overall",
-                                "col_unix_time": "unixReviewTime",
-                                "col_timestamp": "timestamp",
-                                "col_year": "year"}
+    #         self.col_names =   {"col_id_reviewer": "reviewerID",
+    #                             "col_id_product": "asin",
+    #                             "col_rating": "overall",
+    #                             "col_unix_time": "unixReviewTime",
+    #                             "col_timestamp": "timestamp",
+    #                             "col_year": "year"}
             
-        self.train_x, self.test_x = [], []
-        # < Dataset --------------------------------------------------
-        self.log.save_data_configuration("-"*20+f"\nDataset: {self.dataset}")
+    #     self.train_x, self.test_x = [], []
+    #     # < Dataset --------------------------------------------------
+    #     self.log.save_data_configuration("-"*20+f"\nDataset: {self.dataset}")
 
-    def start(self):
+    # def start(self):
 
-        if self.test_mode:
-            print(self.device)
+    #     if self.test_mode:
+    #         print(self.device)
 
-        # Define Logs
-        tb_fm, tb_rnd, tb_pop, tb_ncf = self.log.def_log()
+    #     # Define Logs
+    #     tb_fm, tb_rnd, tb_pop, tb_ncf = self.log.def_log()
         
-        # > Dataset ---------------------------------------------------------------------------------
-        if self.test_mode:
-            NrRows = 5000
-        else:
-            NrRows = None
+    #     # > Dataset ---------------------------------------------------------------------------------
+    #     if self.test_mode:
+    #         NrRows = 5000
+    #     else:
+    #         NrRows = None
 
-        # Message for tuning mode 
-        if self.tuning_mode:
-            self.log.save_data_configuration("-"*20+"\nTuning mode:")
-            [self.log.save_data_configuration(f"{tuning_param}: {value_param}") for tuning_param, value_param in self.tuning_params.items()]
-            self.log.save_data_configuration("-"*20+"\n")
-        else:
-            self.log.save_data_configuration("-"*20+"\nFinal results with 6x6 dataset:")
-            [self.log.save_data_configuration(f"{tuning_param}: {value_param}") for tuning_param, value_param in self.tuning_params.items()]
-            self.log.save_data_configuration("-"*20+"\n")
+    #     # Message for tuning mode 
+    #     if self.tuning_mode:
+    #         self.log.save_data_configuration("-"*20+"\nTuning mode:")
+    #         [self.log.save_data_configuration(f"{tuning_param}: {value_param}") for tuning_param, value_param in self.tuning_params.items()]
+    #         self.log.save_data_configuration("-"*20+"\n")
+    #     else:
+    #         self.log.save_data_configuration("-"*20+"\nFinal results with 6x6 dataset:")
+    #         [self.log.save_data_configuration(f"{tuning_param}: {value_param}") for tuning_param, value_param in self.tuning_params.items()]
+    #         self.log.save_data_configuration("-"*20+"\n")
 
-        df = self.ds.readDataSet(self.exec_path, self.min_reviews, self.min_usuarios, self.dataset,  nrows=NrRows)
-        self.log.save_data_configuration(str(df.nunique()))
-        data, dims = self.ds.getDims(df, self.col_names, self.dataset, self.col_names)
-        if self.test_mode:
-            print(f'df head :')
-            print(f'{str(df.head())}')
-            print(f'getDims data:')
-            print(f'{str(data)}')
-            print(f'getDims dims: {str(dims)}')
+    #     df = self.ds.readDataSet(self.exec_path, self.min_reviews, self.min_usuarios, self.dataset,  nrows=NrRows)
+    #     self.log.save_data_configuration(str(df.nunique()))
+    #     data, dims = self.ds.getDims(df, self.col_names, self.dataset, self.col_names)
+    #     if self.test_mode:
+    #         print(f'df head :')
+    #         print(f'{str(df.head())}')
+    #         print(f'getDims data:')
+    #         print(f'{str(data)}')
+    #         print(f'getDims dims: {str(dims)}')
        
      
-        if self.test_mode == True:
-            print("Dim of users: {}\nDim of items: {}\nDims of unixtime: {}".format(dims[0], dims[1], dims[2]))
+    #     if self.test_mode == True:
+    #         print("Dim of users: {}\nDim of items: {}\nDims of unixtime: {}".format(dims[0], dims[1], dims[2]))
         # < Dataset ---------------------------------------------------------------------------------
     # > Split data Training and Test-------------------------------------------------------------
 #         self.train_x, self.test_x = self.exec.split_train_test(data, dims[0], self.strategy)
@@ -283,8 +283,12 @@ class Main():
     
 # # < End of Class Main
 
-if __name__ == '__main__':
-    main = Main()
-    main.start()
-    exit()    
+# if __name__ == '__main__':
+#     main = Main()
+#     main.start()
+#     exit()    
         
+        
+main = Main()
+main.start()
+exit()
