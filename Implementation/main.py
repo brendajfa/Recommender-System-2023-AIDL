@@ -20,7 +20,7 @@ from types import SimpleNamespace
 
 default_config = SimpleNamespace(
     num_neg = 5,               # {4, 5, 6}         original: 4
-    leave_one_out = "TLOO",    # {TLOO, RLOO}      original: TLOO
+    strategy = "TLOO",    # {TLOO, RLOO}      original: TLOO
     
     hidden_size = 64,          # {32, 64, 128}     original: 32    
     learning_rate = 1e-3,                  # {1e-4, 1e-3}      original: 1e-4
