@@ -1,4 +1,5 @@
 name: aidl
+# conda env create -f Implementation/conda-environment.yml
 channels:
   - pytorch
   - nvidia

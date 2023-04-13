@@ -14,14 +14,42 @@ import model_nfc
 import sampling
 import exec
 import plots
+import argparse
+from types import SimpleNamespace
+
+
+default_config = SimpleNamespace(
+    num_neg = 5,               # {4, 5, 6}         original: 4
+    leave_one_out = "TLOO",    # {TLOO, RLOO}      original: TLOO
+    
+    hidden_size = 64,          # {32, 64, 128}     original: 32    
+    learning_rate = 1e-3,                  # {1e-4, 1e-3}      original: 1e-4
+
+    hidden_size_ncf = 64,      # {32, 64, 128}     original: 32  
+    learning_rate_ncf = 1e-4,               # {1e-4, 1e-3}      original: 1e-4
+
+    seed = 0
+)
+
+def parse_args():
+    "Overriding default argments"
+    argparser = argparse.ArgumentParser(description='Process hyper-parameters')
+    argparser.add_argument('--num_neg', type=int, default=default_config.num_neg, help='number of negatives per positive')
+    argparser.add_argument('--leave_one_out', type=str, default=default_config.leave_one_out, help='strategy method')
+    argparser.add_argument('--hidden_size', type=int, default=default_config.hidden_size, help='hidden_size')
+    argparser.add_argument('--learning_rate', type=float, default=default_config.learning_rate, help='learning rate')
+    argparser.add_argument('--hidden_size_ncf', type=int, default=default_config.hidden_size_ncf, help='hidden_size of ncf')
+    argparser.add_argument('--learning_rate_ncf', type=float, default=default_config.learning_rate_ncf, help='learning rate of ncf')
+    argparser.add_argument('--seed', type=int, default=default_config.seed, help='random seed')
+    return argparser.parse_args()
 
 class Main():
-    def __init__(self, dataset="movie lens"):
+    def __init__(self, dataset="movie lens", args=default_config):
         
         # Select the dataset you want to try
         self.dataset = dataset         #"movie lens"/"Amazon"
         self.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-
+      
         # > Variables ------------------------------------------------
         self.test_mode = False          # Simpler version with ess data + debug
         self.show_tb = False             #Tensorboard
@@ -41,20 +69,19 @@ class Main():
 
         self.ini_time  = datetime.now()
         self.exec_path = os.getcwd()
-        self.strategy  = self.tuning_params["leave_one_out"]
+        self.strategy  = args.strategy
 
         self.hparams = {
             'batch_size':64,
             'num_epochs': 12,
-            'hidden_size':self.tuning_params["hidden_size"], 
-            'learning_rate':self.tuning_params["lr"],
-            'hidden_size_ncf':self.tuning_params["hidden_size_ncf"], 
-            'learning_rate_ncf':self.tuning_params["lr_ncf"]
+            'hidden_size': args.hidden_size, 
+            'learning_rate': args.learning_rate,
+            'hidden_size_ncf':args.hidden_size_ncf, 
+            'learning_rate_ncf':args.learning_rate_ncf
         }
 
         # Seed for Random Reproducibility
-        self.seed=0
-        self.random = exec.Execution.seed_everything(self.seed)
+        self.random = exec.Execution.seed_everything(args.seed)
 
         self.pop_reco = []
         # < Variables ------------------------------------------------
@@ -206,7 +233,7 @@ class Main():
         self.log.save_data_configuration(ln_sep_c*ln_sep_sz)
         self.log.save_data_configuration("Training and Test")
         self.log.save_data_configuration(ln_sep_c*ln_sep_sz)
-        topk = self.tuning_params["topk"]
+        topk = 10
         topks = str(topk)
         col1 = 5
         col2 = 5
@@ -286,6 +313,8 @@ class Main():
 # < End of Class Main
 
 if __name__ == '__main__':
+    args = parse_args()
+    
     main = Main()
-    main.start()
+    main.start(args)
     exit()
